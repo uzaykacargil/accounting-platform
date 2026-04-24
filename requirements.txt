@@ -1,0 +1,17 @@
+# Project dependencies for the accounting-platform
+# We are using standard, stable versions of these libraries
+
+# Used for data manipulation and analysis
+pandas>=2.0.0
+
+# Used for numerical operations
+numpy>=1.24.0
+
+# Used for creating the interactive web dashboard
+streamlit>=1.28.0
+
+# Used for reading Excel files
+openpyxl>=3.1.0
+
+# Used for creating interactive charts in the dashboard
+plotly>=5.17.0
