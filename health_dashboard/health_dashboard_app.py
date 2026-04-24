@@ -30,18 +30,22 @@ st.write("Welcome to the beginner-friendly financial monitoring platform! We are
 # --- Load and Prepare Data ---
 # We use st.cache_data so we don't reload the data every time we click a button
 @st.cache_data
-def get_and_prepare_data():
-    df = load_financial_data()
-    df = run_all_cash_flow_calculations(df)
-    df = run_all_profitability_calculations(df)
-    df = run_all_liquidity_calculations(df)
+def get_raw_data():
+    return load_financial_data()
+
+def calculate_metrics(df):
+    # We make a copy so we don't accidentally modify the raw data in Streamlit's state
+    df_calc = df.copy()
+    df_calc = run_all_cash_flow_calculations(df_calc)
+    df_calc = run_all_profitability_calculations(df_calc)
+    df_calc = run_all_liquidity_calculations(df_calc)
     
     # Calculate custom metrics for user request
-    df['Equity-ratio'] = df['Total Equity'] / df['Total Assets']
-    df['EBIT-Margin'] = df['EBIT'] / df['Revenue']
-    return df
+    df_calc['Equity-ratio'] = df_calc['Total Equity'] / df_calc['Total Assets']
+    df_calc['EBIT-Margin'] = df_calc['EBIT'] / df_calc['Revenue']
+    return df_calc
 
-data = get_and_prepare_data()
+raw_data = get_raw_data()
 
 # --- Dashboard Layout ---
 # We use tabs to organize our different types of analysis
@@ -49,8 +53,11 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["Overview", "Profitability", "Liquidity"
 
 with tab1:
     st.header("Data Overview")
-    st.write("Here is the raw data we are analyzing:")
-    st.dataframe(data) # Show the data as a table
+    st.write("You can **edit** the raw data below! All charts and metrics will update automatically.")
+    edited_raw_data = st.data_editor(raw_data, num_rows="dynamic", use_container_width=True)
+
+# Now calculate the final metrics using the edited data
+data = calculate_metrics(edited_raw_data)
 
 with tab2:
     st.header("Profitability Analysis")
