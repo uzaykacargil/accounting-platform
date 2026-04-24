@@ -39,6 +39,11 @@ def generate_mock_financial_data(num_companies=5):
         inventory = current_assets * np.random.uniform(0.2, 0.5)
         current_liabilities = np.random.uniform(100000, 300000)
         
+        # New additions for EBIT and Equity ratio
+        ebit = operating_profit  # In our simple model, EBIT is Operating Profit
+        total_assets = current_assets + np.random.uniform(300000, 800000)
+        total_equity = np.random.uniform(200000, 600000)
+        
         # Append this company's data to our list as a dictionary
         data.append({
             "Company": f"Company {chr(64+i)}", # Company A, Company B, etc.
@@ -47,12 +52,15 @@ def generate_mock_financial_data(num_companies=5):
             "Operating Expenses": operating_expenses,
             "Gross Profit": gross_profit,
             "Operating Profit": operating_profit,
+            "EBIT": ebit,
             "Net Income": net_income,
             "Operating Cash Flow": operating_cash_flow,
             "Capital Expenditures": capital_expenditures,
             "Current Assets": current_assets,
+            "Total Assets": total_assets,
             "Inventory": inventory,
-            "Current Liabilities": current_liabilities
+            "Current Liabilities": current_liabilities,
+            "Total Equity": total_equity
         })
         
     # Convert the list of dictionaries into a pandas DataFrame (a table)

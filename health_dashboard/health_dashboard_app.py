@@ -35,13 +35,17 @@ def get_and_prepare_data():
     df = run_all_cash_flow_calculations(df)
     df = run_all_profitability_calculations(df)
     df = run_all_liquidity_calculations(df)
+    
+    # Calculate custom metrics for user request
+    df['Equity-ratio'] = df['Total Equity'] / df['Total Assets']
+    df['EBIT-Margin'] = df['EBIT'] / df['Revenue']
     return df
 
 data = get_and_prepare_data()
 
 # --- Dashboard Layout ---
 # We use tabs to organize our different types of analysis
-tab1, tab2, tab3, tab4 = st.tabs(["Overview", "Profitability", "Liquidity", "Cash Flow"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Overview", "Profitability", "Liquidity", "Cash Flow", "Custom Metrics"])
 
 with tab1:
     st.header("Data Overview")
@@ -92,6 +96,23 @@ with tab4:
     
     fig = px.bar(data, x='Company', y=metric_choice, color='Company', title=f"{metric_choice} by Company")
     st.plotly_chart(fig, use_container_width=True)
+
+with tab5:
+    st.header("Custom Metrics")
+    st.write("Table showing Equity-ratio, EBIT, and EBIT-Margin for all companies.")
+    
+    # Select only the requested columns
+    custom_df = data[['Company', 'Equity-ratio', 'EBIT', 'EBIT-Margin']]
+    
+    # Format the columns for better display
+    st.dataframe(
+        custom_df.style.format({
+            'Equity-ratio': '{:.2%}',
+            'EBIT': '${:,.2f}',
+            'EBIT-Margin': '{:.2%}'
+        }),
+        use_container_width=True
+    )
 
 # Add a little footer
 st.markdown("---")
